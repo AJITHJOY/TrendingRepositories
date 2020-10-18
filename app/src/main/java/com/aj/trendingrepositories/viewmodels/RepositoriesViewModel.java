@@ -1,9 +1,16 @@
 package com.aj.trendingrepositories.viewmodels;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.aj.trendingrepositories.models.dbmodels.RepositoriesTable;
 import com.aj.trendingrepositories.models.webmodels.Repositories;
+import com.aj.trendingrepositories.repository.RepoRepository;
 import com.aj.trendingrepositories.webservice.ApiInterface;
 import com.aj.trendingrepositories.webservice.RetroInstance;
 
@@ -13,17 +20,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RepositoriesViewModel extends ViewModel {
+public class RepositoriesViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Repositories>> repositoriesList;
+    private RepoRepository repoRepository;
+    private LiveData<List<RepositoriesTable>> getAllRepos;
 
-    public RepositoriesViewModel() {
+    public RepositoriesViewModel(@NonNull Application application) {
+        super(application);
         repositoriesList = new MutableLiveData<>();
+        repoRepository = new RepoRepository(application);
+        getAllRepos = repoRepository.getGetAllRepos();
     }
 
-    public MutableLiveData<List<Repositories>> getRepositoriesListObserver() {
+    public LiveData<List<Repositories>> getRepositoriesListObserver() {
         return repositoriesList;
-
     }
 
     public void makeApiCall() {
@@ -42,4 +53,13 @@ public class RepositoriesViewModel extends ViewModel {
         });
     }
 
+    public void insert(List<Repositories> repositoriesList) {
+        repoRepository.insert(repositoriesList);
+    }
+
+    public LiveData<List<RepositoriesTable>> getAllRepos() {
+        return getAllRepos;
+    }
+
 }
+
