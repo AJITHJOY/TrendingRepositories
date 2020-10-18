@@ -5,16 +5,13 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
-import com.aj.trendingrepositories.models.dbmodels.RepositoriesTable;
+import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 
-@Database(entities = {RepositoriesTable.class}, version = 1)
+@Database(entities = {RepositoriesTable.class}, version = 2)
 public abstract class RepoDb extends RoomDatabase {
 
     private static final String DB_NAME = "RepoDb";

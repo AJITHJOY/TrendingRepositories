@@ -6,9 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.aj.trendingrepositories.models.dbmodels.RepositoriesTable;
+import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 import com.aj.trendingrepositories.models.webmodels.Repositories;
 import com.aj.trendingrepositories.repository.RepoRepository;
 import com.aj.trendingrepositories.webservice.ApiInterface;
@@ -24,7 +23,7 @@ public class RepositoriesViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Repositories>> repositoriesList;
     private RepoRepository repoRepository;
-    private LiveData<List<RepositoriesTable>> getAllRepos;
+    public LiveData<List<RepositoriesTable>> getAllRepos;
 
     public RepositoriesViewModel(@NonNull Application application) {
         super(application);

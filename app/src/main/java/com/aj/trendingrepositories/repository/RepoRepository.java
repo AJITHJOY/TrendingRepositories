@@ -2,18 +2,14 @@ package com.aj.trendingrepositories.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.text.BoringLayout;
 
 import androidx.lifecycle.LiveData;
 
-import com.aj.trendingrepositories.R;
 import com.aj.trendingrepositories.db.RepoDao;
 import com.aj.trendingrepositories.db.RepoDb;
-import com.aj.trendingrepositories.models.dbmodels.RepositoriesTable;
+import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 import com.aj.trendingrepositories.models.webmodels.Repositories;
 
-import java.security.PublicKey;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
