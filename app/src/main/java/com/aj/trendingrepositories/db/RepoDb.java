@@ -14,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.aj.trendingrepositories.models.dbmodels.RepositoriesTable;
 
-@Database(entities = {RepositoriesTable.class}, version = 3)
+@Database(entities = {RepositoriesTable.class}, version = 1)
 public abstract class RepoDb extends RoomDatabase {
 
     private static final String DB_NAME = "RepoDb";

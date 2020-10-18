@@ -2,6 +2,7 @@ package com.aj.trendingrepositories.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.text.BoringLayout;
 
 import androidx.lifecycle.LiveData;
 
@@ -28,14 +29,12 @@ public class RepoRepository {
     }
 
     public void insert(List<Repositories> repositoriesList) {
-        new InsertAllRepositoriesTask(repoDb,repositoriesList).execute();
+        new InsertAllRepositoriesTask(repoDb, repositoriesList).execute();
     }
 
     public LiveData<List<RepositoriesTable>> getGetAllRepos() {
-
         return getAllRepos;
     }
-
 
     class InsertAllRepositoriesTask extends AsyncTask<Void, Void, Void> {
 
@@ -43,13 +42,13 @@ public class RepoRepository {
         private List<Repositories> repositoriesList;
         private List<RepositoriesTable> repositoriesTableList = new ArrayList<>();
 
-        InsertAllRepositoriesTask(RepoDb repoDb, List<Repositories> repositoriesList1) {
+        InsertAllRepositoriesTask(RepoDb repoDb, List<Repositories> repositoriesDataList) {
             repoDao = repoDb.RepoDao();
-            repositoriesList = repositoriesList1;
+            repositoriesList = repositoriesDataList;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... params) {
             for (int i = 0; i < repositoriesList.size(); i++) {
                 RepositoriesTable repositoriesTable = new RepositoriesTable(
                         repositoriesList.get(i).getAuthor(),
@@ -62,14 +61,12 @@ public class RepoRepository {
                         repositoriesList.get(i).getStars(),
                         repositoriesList.get(i).getForks(),
                         repositoriesList.get(i).getCurrentPeriodStars());
-
                 repositoriesTableList.add(repositoriesTable);
             }
-
             repoDao.insertRepositoriesData(repositoriesTableList);
             return null;
-
         }
+
     }
 
 
