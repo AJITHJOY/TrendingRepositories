@@ -2,6 +2,7 @@ package com.aj.trendingrepositories.ui.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,12 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
         holder.tv_language.setText(repositoriesTableList.get(position).getLanguage());
         holder.tv_stars.setText(String.valueOf(repositoriesTableList.get(position).getStars()));
 
-        holder.ll_languageColor.setBackgroundColor(Color.parseColor(repositoriesTableList.get(position).getLanguageColor()));
+//        holder.ll_languageColor.setBackgroundColor(Color.parseColor(repositoriesTableList.get(position).getLanguageColor()));
+
+        GradientDrawable bgShape = (GradientDrawable)holder.ll_languageColor.getBackground();
+        bgShape.setColor(Color.parseColor(repositoriesTableList.get(position).getLanguageColor()));
+
+//        holder.ll_languageColor.setBackground(getR.drawable.circle_shape);
 
 
         Glide.with(context)
@@ -66,22 +72,14 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
         return repositoriesTableList.size();
     }
 
-
-    public void filterList(ArrayList<RepositoriesTable> repositoriesTableListFiltered) {
-        repositoriesTableList = repositoriesTableListFiltered;
-        notifyDataSetChanged();
-    }
-
     @Override
     public Filter getFilter() {
         return filter;
-
     }
 
     Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-
             List<RepositoriesTable> filteredData = new ArrayList<>();
             if (charSequence.toString().isEmpty()) {
                 filteredData.addAll(repositoriesListAll);
@@ -93,11 +91,9 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
                 }
             }
 
-
             FilterResults filterResults = new FilterResults();
             filterResults.values = filteredData;
             return filterResults;
-
         }
 
         @Override
@@ -105,7 +101,6 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
             repositoriesTableList.clear();
             repositoriesTableList.addAll((Collection<? extends RepositoriesTable>) filterResults.values);
             notifyDataSetChanged();
-
         }
     };
 

@@ -21,6 +21,7 @@ import com.aj.trendingrepositories.databinding.ActivityMainBinding;
 import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 import com.aj.trendingrepositories.models.webmodels.Repositories;
 import com.aj.trendingrepositories.ui.adapters.RepositoriesRecyclerAdapter;
+import com.aj.trendingrepositories.utils.NetworkUtils;
 import com.aj.trendingrepositories.viewmodels.RepositoriesViewModel;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         init();
 
-        viewModel.makeApiCall();
 
         viewModel.getRepositoriesListObserver().observe(this, repositories -> {
             if (repositories != null) {
@@ -60,21 +60,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        viewModel.getAllRepos().observe(this, new Observer<List<RepositoriesTable>>() {
-            @Override
-            public void onChanged(List<RepositoriesTable> repositoriesTableList) {
-                if (repositoriesTableList.size() > 0) {
-                    binding.swiperefresh.setRefreshing(false);
-                    Toast.makeText(context, "" + repositoriesTableList.size(), Toast.LENGTH_SHORT).show();
+        viewModel.getAllRepos().observe(this, repositoriesTableList -> {
+            if (repositoriesTableList.size() > 0) {
+                binding.swiperefresh.setRefreshing(false);
+                Toast.makeText(context, "" + repositoriesTableList.size(), Toast.LENGTH_SHORT).show();
 
-                    repositoriesRecyclerAdapter = new RepositoriesRecyclerAdapter(repositoriesTableList, context);
-                    binding.rvRepositories.setAdapter(repositoriesRecyclerAdapter);
-                    repositoriesRecyclerAdapter.notifyDataSetChanged();
-                } else {
-//                    binding.swiperefresh.setRefreshing(false);
-                    Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
-                }
-
+                repositoriesRecyclerAdapter = new RepositoriesRecyclerAdapter(repositoriesTableList, context);
+                binding.rvRepositories.setAdapter(repositoriesRecyclerAdapter);
+                repositoriesRecyclerAdapter.notifyDataSetChanged();
+            } else {
+                binding.swiperefresh.setRefreshing(false);
+                Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -84,18 +80,15 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         setProgressView();
         setRecyclerView();
-
+        binding.btnTryAgain.setOnClickListener(view -> callWebservice());
         viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel.class);
+        callWebservice();
+    }
 
-
-//        ActionBar actionBar;
-//        actionBar = getSupportActionBar();
-//        ColorDrawable colorDrawable
-//                = new ColorDrawable(Color.parseColor("#000"));
-//
-//        // Set BackgroundDrawable
-//        actionBar.setBackgroundDrawable(colorDrawable);
-//        actionBar.setT
+    private void setProgressView() {
+        binding.swiperefresh.setColorSchemeColors(getResources().getColor(R.color.design_default_color_primary_dark));
+        binding.swiperefresh.setRefreshing(true);
+        binding.swiperefresh.setOnRefreshListener(this::callWebservice);
     }
 
     private void setRecyclerView() {
@@ -103,15 +96,18 @@ public class MainActivity extends AppCompatActivity {
         binding.rvRepositories.setLayoutManager(mLayoutManager);
         binding.rvRepositories.setItemAnimator(new DefaultItemAnimator());
         repositoriesRecyclerAdapter = new RepositoriesRecyclerAdapter(repositoriesTableList, context);
-
     }
 
-    private void setProgressView() {
-        binding.swiperefresh.setColorSchemeColors(getResources().getColor(R.color.design_default_color_primary_dark));
-        binding.swiperefresh.setRefreshing(true);
-        binding.swiperefresh.setOnRefreshListener(() -> {
+    private void callWebservice() {
+        binding.swiperefresh.setRefreshing(false);
+        if (NetworkUtils.isNetworkAvailable(context)) {
+            binding.llNoInternet.setVisibility(View.GONE);
+            binding.swiperefresh.setVisibility(View.VISIBLE);
             viewModel.makeApiCall();
-        });
+        } else {
+            binding.llNoInternet.setVisibility(View.VISIBLE);
+            binding.swiperefresh.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -136,21 +132,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-//    private void searchFilter(String searchText) {
-//        ArrayList<RepositoriesTable> repositoriesTableListFiltered = new ArrayList<>();
-//
-//
-//        for (int i = 0; i < repositoriesTableList.size(); i++) {
-//            if (repositoriesTableList.get(i).getName().toLowerCase().contains(searchText.toLowerCase())) {
-//                Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
-////                repositoriesTableListFiltered.add(repositoriesTable);
-//            }
-//        }
-//
-//
-//        repositoriesRecyclerAdapter.filterList(repositoriesTableListFiltered);
-//        repositoriesRecyclerAdapter.notifyDataSetChanged();
-//
-//
-//    }
 }
