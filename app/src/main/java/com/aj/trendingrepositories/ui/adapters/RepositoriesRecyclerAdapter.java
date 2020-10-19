@@ -52,14 +52,6 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
         holder.tv_language.setText(repositoriesTableList.get(position).getLanguage());
         holder.tv_stars.setText(String.valueOf(repositoriesTableList.get(position).getStars()));
 
-//        holder.ll_languageColor.setBackgroundColor(Color.parseColor(repositoriesTableList.get(position).getLanguageColor()));
-
-        GradientDrawable bgShape = (GradientDrawable)holder.ll_languageColor.getBackground();
-        bgShape.setColor(Color.parseColor(repositoriesTableList.get(position).getLanguageColor()));
-
-//        holder.ll_languageColor.setBackground(getR.drawable.circle_shape);
-
-
         Glide.with(context)
                 .load(repositoriesTableList.get(position).getAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 
-@Database(entities = {RepositoriesTable.class}, version = 2,exportSchema = false)
+@Database(entities = {RepositoriesTable.class}, version = 2, exportSchema = false)
 public abstract class RepoDb extends RoomDatabase {
 
     private static final String DB_NAME = "RepoDb";
@@ -20,6 +20,7 @@ public abstract class RepoDb extends RoomDatabase {
 
     private static volatile RepoDb INSTANCE;
 
+    //    Building local database
     public static RepoDb getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (RepoDb.class) {

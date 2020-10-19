@@ -1,5 +1,6 @@
 package com.aj.trendingrepositories.ui;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -9,12 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.aj.trendingrepositories.R;
 import com.aj.trendingrepositories.databinding.ActivityMainBinding;
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         init();
-
+        getData();
 
         viewModel.getRepositoriesListObserver().observe(this, repositories -> {
             if (repositories != null) {
@@ -60,17 +66,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void getData() {
         viewModel.getAllRepos().observe(this, repositoriesTableList -> {
             if (repositoriesTableList.size() > 0) {
                 binding.swiperefresh.setRefreshing(false);
-                Toast.makeText(context, "" + repositoriesTableList.size(), Toast.LENGTH_SHORT).show();
-
                 repositoriesRecyclerAdapter = new RepositoriesRecyclerAdapter(repositoriesTableList, context);
                 binding.rvRepositories.setAdapter(repositoriesRecyclerAdapter);
                 repositoriesRecyclerAdapter.notifyDataSetChanged();
             } else {
-                binding.swiperefresh.setRefreshing(false);
-                Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
+                if (NetworkUtils.isNetworkAvailable(context)) {
+                    binding.llNoInternet.setVisibility(View.GONE);
+                    binding.swiperefresh.setVisibility(View.VISIBLE);
+                    viewModel.makeApiCall();
+                } else {
+                    binding.llNoInternet.setVisibility(View.VISIBLE);
+                    binding.swiperefresh.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -80,15 +93,37 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         setProgressView();
         setRecyclerView();
+        setActionBarColor();
         binding.btnTryAgain.setOnClickListener(view -> callWebservice());
         viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel.class);
-        callWebservice();
+    }
+
+    private void setActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(getResources().getColor(R.color.black));
+        actionBar.setBackgroundDrawable(colorDrawable);
     }
 
     private void setProgressView() {
-        binding.swiperefresh.setColorSchemeColors(getResources().getColor(R.color.design_default_color_primary_dark));
+        binding.swiperefresh.setColorSchemeColors(getResources().getColor(R.color.black));
         binding.swiperefresh.setRefreshing(true);
-        binding.swiperefresh.setOnRefreshListener(this::callWebservice);
+        binding.swiperefresh.setOnRefreshListener(this::onSwipeDown);
+    }
+
+    private void onSwipeDown() {
+        if (repositoriesTableList.size() == 0) {
+            if (NetworkUtils.isNetworkAvailable(context)) {
+                binding.llNoInternet.setVisibility(View.GONE);
+                binding.swiperefresh.setVisibility(View.VISIBLE);
+                viewModel.makeApiCall();
+            } else {
+                binding.llNoInternet.setVisibility(View.VISIBLE);
+                binding.swiperefresh.setVisibility(View.GONE);
+            }
+        } else {
+            Toast.makeText(context, "Has Data", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void setRecyclerView() {
@@ -99,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void callWebservice() {
-        binding.swiperefresh.setRefreshing(false);
         if (NetworkUtils.isNetworkAvailable(context)) {
             binding.llNoInternet.setVisibility(View.GONE);
             binding.swiperefresh.setVisibility(View.VISIBLE);

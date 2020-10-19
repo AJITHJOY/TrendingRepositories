@@ -8,7 +8,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Repositories")
+@Entity(tableName = "Repositories", indices = {@Index(value = {"author", "name", "avatar",
+        "url", "description", "language", "languageColor", "stars", "forks", "currentPeriodStars"}, unique = true)})
 public class RepositoriesTable implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
