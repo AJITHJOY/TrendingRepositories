@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,16 +20,20 @@ import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<RepositoriesRecyclerAdapter.ViewHolder> {
+public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<RepositoriesRecyclerAdapter.ViewHolder> implements Filterable {
 
     private List<RepositoriesTable> repositoriesTableList;
+    private List<RepositoriesTable> repositoriesListAll;
     private Context context;
 
     public RepositoriesRecyclerAdapter(List<RepositoriesTable> repositoriesTableList, Context context) {
         this.repositoriesTableList = repositoriesTableList;
         this.context = context;
+        this.repositoriesListAll = new ArrayList<>(repositoriesTableList);
     }
 
     @NonNull
@@ -59,6 +65,49 @@ public class RepositoriesRecyclerAdapter extends RecyclerView.Adapter<Repositori
     public int getItemCount() {
         return repositoriesTableList.size();
     }
+
+
+    public void filterList(ArrayList<RepositoriesTable> repositoriesTableListFiltered) {
+        repositoriesTableList = repositoriesTableListFiltered;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+
+    }
+
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+
+            List<RepositoriesTable> filteredData = new ArrayList<>();
+            if (charSequence.toString().isEmpty()) {
+                filteredData.addAll(repositoriesListAll);
+            } else {
+                for (RepositoriesTable obj : repositoriesListAll) {
+                    if (obj.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredData.add(obj);
+                    }
+                }
+            }
+
+
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredData;
+            return filterResults;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            repositoriesTableList.clear();
+            repositoriesTableList.addAll((Collection<? extends RepositoriesTable>) filterResults.values);
+            notifyDataSetChanged();
+
+        }
+    };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

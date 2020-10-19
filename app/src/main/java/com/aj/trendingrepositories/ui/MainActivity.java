@@ -23,6 +23,7 @@ import com.aj.trendingrepositories.models.webmodels.Repositories;
 import com.aj.trendingrepositories.ui.adapters.RepositoriesRecyclerAdapter;
 import com.aj.trendingrepositories.viewmodels.RepositoriesViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private RepositoriesRecyclerAdapter repositoriesRecyclerAdapter;
     private Context context = this;
-    private List<RepositoriesTable> repositoriesTableList;
+    private List<RepositoriesTable> repositoriesTableList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,10 +129,28 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                Toast.makeText(context, "searching", Toast.LENGTH_SHORT).show();
+                repositoriesRecyclerAdapter.getFilter().filter(s);
                 return true;
             }
         });
         return super.onCreateOptionsMenu(menu);
     }
+
+//    private void searchFilter(String searchText) {
+//        ArrayList<RepositoriesTable> repositoriesTableListFiltered = new ArrayList<>();
+//
+//
+//        for (int i = 0; i < repositoriesTableList.size(); i++) {
+//            if (repositoriesTableList.get(i).getName().toLowerCase().contains(searchText.toLowerCase())) {
+//                Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+////                repositoriesTableListFiltered.add(repositoriesTable);
+//            }
+//        }
+//
+//
+//        repositoriesRecyclerAdapter.filterList(repositoriesTableListFiltered);
+//        repositoriesRecyclerAdapter.notifyDataSetChanged();
+//
+//
+//    }
 }

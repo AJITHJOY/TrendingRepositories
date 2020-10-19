@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.aj.trendingrepositories.db.tables.RepositoriesTable;
 
-@Database(entities = {RepositoriesTable.class}, version = 2)
+@Database(entities = {RepositoriesTable.class}, version = 1,exportSchema = false)
 public abstract class RepoDb extends RoomDatabase {
 
     private static final String DB_NAME = "RepoDb";
@@ -25,12 +25,9 @@ public abstract class RepoDb extends RoomDatabase {
             synchronized (RepoDb.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context, RepoDb.class, DB_NAME)
-                            .addCallback(new Callback() {
-                                @Override
-                                public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
-                                    super.onDestructiveMigration(db);
-                                }
-                            }).fallbackToDestructiveMigration().build();
+                            .addCallback(callback)
+                            .fallbackToDestructiveMigration()
+                            .build();
                 }
             }
         }

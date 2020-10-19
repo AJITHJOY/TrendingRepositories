@@ -8,7 +8,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Repositories", indices = @Index(value = {"sID"}, unique = true))
+@Entity(tableName = "Repositories")
 public class RepositoriesTable implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
@@ -146,6 +146,14 @@ public class RepositoriesTable implements Parcelable {
     public void setCurrentPeriodStars(Integer currentPeriodStars) {
         this.currentPeriodStars = currentPeriodStars;
     }
+
+    @Override
+    public String toString() {
+        return "RepositoriesTable{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
 
     protected RepositoriesTable(Parcel in) {
         sID = in.readInt();
